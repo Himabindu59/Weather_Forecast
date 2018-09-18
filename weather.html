@@ -1,0 +1,73 @@
+<html>
+<head>
+<style type= "text/css">
+ body{
+ background-image:url("background1.jpg");
+ font-size: 40px;
+ }
+ .climate{
+ text-align:center;
+ font-size:40px;
+ padding :20px 20px;
+ }
+ h1,h2{
+ text-align:center;
+ }
+</style>
+</head>
+<body>
+<h1> Weather Forecast</h1>
+
+<div class="climate">
+   <input type="text" name="enter" class="enter" value="" id="cityName" placeholder = "Enter the CityName " required></input> 
+    <input type="button" value="search" id="kk" onClick = "loadDoc()" ></input>
+<div id="City"></div>
+<div id= "temparature"></div>
+<div id="condition"></div>
+
+</div>
+
+
+<script>
+
+ var cityName = document.getElementById('cityName');
+        
+function loadDoc() {
+  var city = "'" + cityName.value +"'"  ;
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+     
+     var jsonObject =  JSON.parse(this.responseText);
+    
+      document.getElementById("City").innerHTML = "City: " + city;
+       document.getElementById("temparature").innerHTML = "Temparature: " +jsonObject.query.results.channel.item.condition.temp + "F"
+ document.getElementById("condition").innerHTML = "Condition: " +jsonObject.query.results.channel.item.condition.text 
+	if(jsonObject.query.results.channel.item.condition.text== "Mostly Cloudy"){
+	document.body.style.backgroundImage = "url('Thunderstorms.jpg')";
+}
+else if(jsonObject.query.results.channel.item.condition.text== "Rain"){
+	document.body.style.backgroundImage = "url('r1.png')";
+}
+else if(jsonObject.query.results.channel.item.condition.text== "Sunny"){
+	document.body.style.backgroundImage = "url('Sunlight.jpg')";
+}
+else if(jsonObject.query.results.channel.item.condition.text== "Clear"){
+	document.body.style.backgroundImage = "url('background1.jpg')";
+}
+
+
+
+    }
+  };
+xhttp.open("POST", 'https://query.yahooapis.com/v1/public/yql?q=select item.condition from weather.forecast where woeid in (select woeid from geo.places(1) where text='+city+')&format=json', true);
+  xhttp.send();
+}
+
+</script>
+</body>
+</html>
+
+
+
+
